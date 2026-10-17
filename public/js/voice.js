@@ -91,7 +91,8 @@
     u.onend = function () { if (c.native) finish(c); };
     u.onerror = function () { if (c.native && !c.finished) { startEstimated(c, c.lastChar); } };
     // Chrome stalls long utterances; nudging pause/resume keeps it going.
-    c.keepAlive = setInterval(function () {
+    // (Desktop only: on Android pause() can stop speech for good.)
+    if (!/Android/i.test(navigator.userAgent || '')) c.keepAlive = setInterval(function () {
       if (c.finished || !c.native) return;
       try { if (synth.speaking && !synth.paused) { synth.pause(); synth.resume(); } } catch (e) {}
     }, 10000);
@@ -106,7 +107,7 @@
     }, 2500);
     u.onend = function () { if (c.native) finish(c); };
     // Hard cap so the UI can never hang.
-    c.cap = setTimeout(function () { try { synth.cancel(); } catch (e) {} finish(c); }, estimate(c.text.length) * 2.5 + 8000);
+    c.cap = setTimeout(function () { try { synth.cancel(); } catch (e) {} finish(c); }, estimate(c.text.length) * 1.6 + 4000);
     try { if (synth.speaking || synth.pending) synth.cancel(); synth.speak(u); } catch (e) { clearTimeout(c.watchdog); startEstimated(c, 0); c.started = true; if (c.opts.onstart) c.opts.onstart(); }
   }
 

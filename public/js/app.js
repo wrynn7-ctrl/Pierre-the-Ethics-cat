@@ -110,6 +110,7 @@
   }
 
   /* Pierre says `text`: types it out while the voice and mouth run. */
+  var sayTurn = 0;
   function say(text, done) {
     var bubble = addPierreShell();
     // Screen readers get the whole line at once; the typed copy is hidden from them.
@@ -122,13 +123,20 @@
     var reduce = false;
     try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
+    var mouthTimer = null, myTurn = ++sayTurn;
+    // Only the latest line may close the mouth.
+    function stopMouth() { clearTimeout(mouthTimer); if (Avatar && myTurn === sayTurn) Avatar.stopTalking(); }
+    // The chat unlocks as soon as the text is fully typed. Some browsers
+    // (notably Chrome on Android) never report that speech ended, so the
+    // voice must never be able to hold the input hostage.
     function maybeFinish() {
-      if (finished || !ended || !typed) return;
+      if (finished || !typed) return;
       finished = true;
-      if (Avatar) Avatar.stopTalking();
       caret.remove();
       history.push({ role: 'assistant', content: text });
       history = history.slice(-10);
+      if (ended) stopMouth();
+      else mouthTimer = setTimeout(stopMouth, 4000); // voice may still be finishing
       done && done();
     }
     function typeStep() {
@@ -152,7 +160,7 @@
       // Speech is over: reveal anything left and settle.
       clearTimeout(typeTimer);
       i = text.length; vis.textContent = text; typed = true;
-      maybeFinish();
+      if (finished) stopMouth(); else maybeFinish();
     };
     if (Voice) {
       Voice.speak(text, {

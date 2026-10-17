@@ -1,0 +1,12 @@
+{
+  "name": "pierre-the-ethical-cat",
+  "version": "1.0.0",
+  "description": "A joke web app: Pierre, a pompous French philosopher cat, answers ethical questions. Entertainment only.",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

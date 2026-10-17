@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200">
+<defs>
+<linearGradient id="vel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a23a52"/><stop offset=".35" stop-color="#7a2338"/><stop offset="1" stop-color="#4d1424"/></linearGradient>
+<linearGradient id="gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3d27a"/><stop offset=".5" stop-color="#c8923a"/><stop offset="1" stop-color="#8f5f1f"/></linearGradient>
+<linearGradient id="hl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd0d8" stop-opacity=".45"/><stop offset="1" stop-color="#ffd0d8" stop-opacity="0"/></linearGradient>
+</defs>
+<path d="M0 1200V1152C110 1128 260 1116 450 1114C640 1116 790 1128 900 1152V1200Z" fill="url(#vel)"/>
+<path d="M0 1152C110 1128 260 1116 450 1114C640 1116 790 1128 900 1152V1172C790 1148 640 1138 450 1136C260 1138 110 1148 0 1172Z" fill="url(#hl)"/>
+<path d="M0 1152C110 1128 260 1116 450 1114C640 1116 790 1128 900 1152" fill="none" stroke="url(#gd)" stroke-width="6"/>
+<path d="M0 1176C110 1156 260 1146 450 1144C640 1146 790 1156 900 1176" fill="none" stroke="#3a0d1b" stroke-width="3" opacity=".5"/>
+<g fill="none" stroke="#3a0d1b" stroke-width="3" opacity=".35" stroke-linecap="round"><path d="M180 1128Q196 1165 170 1200"/><path d="M330 1118Q346 1160 322 1200"/><path d="M570 1118Q554 1160 578 1200"/><path d="M720 1128Q704 1165 730 1200"/></g>
+<g fill="url(#gd)"><circle cx="255" cy="1172" r="8"/><circle cx="450" cy="1170" r="8"/><circle cx="645" cy="1172" r="8"/></g>
+<g fill="#3a0d1b" opacity=".4"><circle cx="257" cy="1174" r="3"/><circle cx="452" cy="1172" r="3"/><circle cx="647" cy="1174" r="3"/></g>
+<g><path d="M40 1156Q22 1166 30 1184" stroke="#c8923a" stroke-width="3" fill="none"/><rect x="22" y="1170" width="18" height="30" rx="4" fill="url(#gd)"/><path d="M24 1182H38M24 1190H38" stroke="#8f5f1f" stroke-width="1.5"/>
+<path d="M860 1156Q878 1166 870 1184" stroke="#c8923a" stroke-width="3" fill="none"/><rect x="860" y="1170" width="18" height="30" rx="4" fill="url(#gd)"/><path d="M862 1182H876M862 1190H876" stroke="#8f5f1f" stroke-width="1.5"/></g>
+</svg>

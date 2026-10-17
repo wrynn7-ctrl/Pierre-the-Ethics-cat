@@ -79,6 +79,8 @@
       if (c.finished) return;
       if (!c.started) { c.started = true; if (c.opts.onstart) { try { c.opts.onstart(); } catch (e) { console.error(e); } } }
       clearTimeout(c.watchdog);
+      // Started late: let the real voice decide when Pierre stops talking.
+      if (c.native) clearTimeout(c.estTimer);
     };
     u.onboundary = function (ev) {
       if (c.finished) return;
@@ -92,17 +94,19 @@
       if (c.finished || !c.native) return;
       try { if (synth.speaking && !synth.paused) { synth.pause(); synth.resume(); } } catch (e) {}
     }, 10000);
-    // If nothing starts (blocked autoplay, no voices), fall back to a timed mouth.
+    // If speech is slow to start, get the mouth and text moving on a timer,
+    // but never cancel it: the first line of a visit often needs a few
+    // seconds while the browser loads its voice.
     c.watchdog = setTimeout(function () {
       if (c.finished || c.started) return;
-      try { synth.cancel(); } catch (e) {}
       c.started = true;
       if (c.opts.onstart) { try { c.opts.onstart(); } catch (e) { console.error(e); } }
-      startEstimated(c, 0);
+      c.estTimer = setTimeout(function () { finish(c); }, estimate(c.text.length));
     }, 2500);
+    u.onend = function () { if (c.native) finish(c); };
     // Hard cap so the UI can never hang.
     c.cap = setTimeout(function () { try { synth.cancel(); } catch (e) {} finish(c); }, estimate(c.text.length) * 2.5 + 8000);
-    try { synth.cancel(); synth.speak(u); } catch (e) { clearTimeout(c.watchdog); startEstimated(c, 0); c.started = true; if (c.opts.onstart) c.opts.onstart(); }
+    try { if (synth.speaking || synth.pending) synth.cancel(); synth.speak(u); } catch (e) { clearTimeout(c.watchdog); startEstimated(c, 0); c.started = true; if (c.opts.onstart) c.opts.onstart(); }
   }
 
   var api = {

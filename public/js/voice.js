@@ -32,17 +32,18 @@
         return langRe.test(v.lang) && nameRe.test(v.name) && !FEMALE.test(v.name);
       });
       // Natural / online voices sound far less robotic.
-      list.sort(function (a, b) { return (/natural|online|premium|enhanced/i.test(b.name) ? 1 : 0) - (/natural|online|premium|enhanced/i.test(a.name) ? 1 : 0); });
+      list.sort(function (a, b) { return (/natural|online|premium|enhanced|network/i.test(b.name) ? 1 : 0) - (/natural|online|premium|enhanced|network/i.test(a.name) ? 1 : 0); });
       return list.sort(function (a, b) { return (/^fr[-_]FR/i.test(b.lang) ? 1 : 0) - (/^fr[-_]FR/i.test(a.lang) ? 1 : 0); })[0];
     }
     var v = by(/^fr/i, MALE_FR);
-    if (v) return { voice: v, pitch: 0.95, rate: 0.88 };
+    if (v) return { voice: v, pitch: 1, rate: 0.92 };
     v = by(/^en/i, MALE_EN);
-    if (v) return { voice: v, pitch: 0.9, rate: 0.88 };
-    var fr = voices.filter(function (x) { return /^fr/i.test(x.lang); })[0];
-    if (fr) return { voice: fr, pitch: 0.6, rate: 0.85 };
+    if (v) return { voice: v, pitch: 1, rate: 0.92 };
+    var frAll = voices.filter(function (x) { return /^fr/i.test(x.lang); });
+    var fr = frAll.filter(function (x) { return x.localService === false; })[0] || frAll[0];
+    if (fr) return { voice: fr, pitch: 0.82, rate: 0.92 };
     var en = voices.filter(function (x) { return /^en/i.test(x.lang); })[0];
-    return { voice: en || null, pitch: 0.6, rate: 0.85 };
+    return { voice: en || null, pitch: 0.82, rate: 0.92 };
   }
 
   var current = null; // { text, opts, finished, timers, lastChar, native }

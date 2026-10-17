@@ -18,16 +18,31 @@
     else synth.onvoiceschanged = loadVoices;
   }
 
+  // Pierre is a boy: aim for a snooty, deadpan Frenchman (think Michel
+  // from Gilmore Girls). Voice names differ per device, so match known
+  // male voices first and only pitch a female voice down as a last resort.
+  var MALE_FR = /thomas|nicolas|paul|henri|remy|rémy|antoine|jean|thierry|fabrice|gerard|gérard|alain|claude|frb|frd|male|homme/i;
+  var MALE_EN = /daniel|alex\b|fred|aaron|arthur|oliver|gordon|rishi|david|mark|guy|ryan|george|andrew|christopher|eric|brian|thomas|tom\b|iol|iom|male/i;
+  var FEMALE = /female|femme|am[eé]lie|audrey|aur[eé]lie|marie|julie|hortense|denise|[eé]lo[iï]se|sylvie|virginie|vivienne|google fran/i;
+
   function pickVoice() {
     if (!voices.length) loadVoices();
-    var fr = voices.filter(function (v) { return /^fr/i.test(v.lang); });
-    if (fr.length) {
-      var best = fr.filter(function (v) { return /^fr[-_]FR/i.test(v.lang); })[0];
-      var named = fr.filter(function (v) { return /thomas|google|daniel|male/i.test(v.name); })[0];
-      return named || best || fr[0];
+    function by(langRe, nameRe) {
+      var list = voices.filter(function (v) {
+        return langRe.test(v.lang) && nameRe.test(v.name) && !FEMALE.test(v.name);
+      });
+      // Natural / online voices sound far less robotic.
+      list.sort(function (a, b) { return (/natural|online|premium|enhanced/i.test(b.name) ? 1 : 0) - (/natural|online|premium|enhanced/i.test(a.name) ? 1 : 0); });
+      return list.sort(function (a, b) { return (/^fr[-_]FR/i.test(b.lang) ? 1 : 0) - (/^fr[-_]FR/i.test(a.lang) ? 1 : 0); })[0];
     }
-    var en = voices.filter(function (v) { return /^en/i.test(v.lang); });
-    return en.filter(function (v) { return /^en[-_]GB/i.test(v.lang); })[0] || en[0] || null;
+    var v = by(/^fr/i, MALE_FR);
+    if (v) return { voice: v, pitch: 0.95, rate: 0.88 };
+    v = by(/^en/i, MALE_EN);
+    if (v) return { voice: v, pitch: 0.9, rate: 0.88 };
+    var fr = voices.filter(function (x) { return /^fr/i.test(x.lang); })[0];
+    if (fr) return { voice: fr, pitch: 0.6, rate: 0.85 };
+    var en = voices.filter(function (x) { return /^en/i.test(x.lang); })[0];
+    return { voice: en || null, pitch: 0.6, rate: 0.85 };
   }
 
   var current = null; // { text, opts, finished, timers, lastChar, native }
@@ -55,9 +70,9 @@
 
   function startNative(c) {
     var u = new SpeechSynthesisUtterance(c.text);
-    var v = pickVoice();
+    var pick = pickVoice(), v = pick.voice;
     if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'fr-FR'; }
-    u.rate = 0.95; u.pitch = 1.15; u.volume = 1;
+    u.rate = pick.rate; u.pitch = pick.pitch; u.volume = 1;
     c.native = true;
     c.utter = u; // keep a reference (Chrome can garbage-collect utterances)
     u.onstart = function () {

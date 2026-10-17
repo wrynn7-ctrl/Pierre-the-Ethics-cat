@@ -37,6 +37,12 @@ Optional settings: `PIERRE_MODEL` (default `claude-haiku-5-5`) and `PORT`. The s
 - **Static hosting only (jokes mode)**: GitHub Pages, Netlify, Cloudflare Pages and friends can serve the `public/` folder as-is. There is no server there, so Pierre uses jokes mode automatically.
 - **Any Node host (AI mode possible)**: Render, Railway, Fly.io, or any server that can run Node. Set the start command to `node server.js`, and add `ANTHROPIC_API_KEY` (and `PIERRE_MODE=ai`) in the host's environment settings.
 
+### GitHub Pages (free, jokes mode)
+
+1. On GitHub, open the repo's **Settings → Pages**. Under **Build and deployment → Source**, choose **GitHub Actions**.
+2. Open the **Actions** tab, pick **Deploy to GitHub Pages**, and click **Run workflow** (it also runs on every push that changes `public/`).
+3. After about a minute the site is live at `https://<your-username>.github.io/<repo-name>/`.
+
 ## Files
 
 - `public/` is the website (page, styles, Pierre's face, voice, and the joke engine in `public/js/jokes.js`).
